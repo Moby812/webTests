@@ -1,7 +1,8 @@
 public class XPath {
 
-    static String search = "";
-    static String mobileDark = "";
+    static String search = "//*[@class = 'search']//input[@placeholder='...']";
 
-    // TODO: 27.11.2022 Метод поиска и нажатия кнопки, название которой указано в параметре
+    public static String searchText(String text) {
+        return "//*[contains(text(),'" + text +"')]";
+    }
 }
