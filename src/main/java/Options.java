@@ -1,5 +1,8 @@
 public class Options {
 
+    static String tag = "котэ";
+    static String site = "https://joyreactor.cc/";
+
     public static void Driver() {
         System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
     }

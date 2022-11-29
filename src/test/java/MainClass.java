@@ -10,25 +10,29 @@ public class MainClass {
         Options.Driver();
         WebDriver driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+        driver.manage().window().minimize();
 
-        driver.get("https://joyreactor.cc/");
+        driver.get(Options.site);
+        System.out.printf("Выполнен переход на сайт: %s \n", Options.site);
         driver.findElement(By.xpath(XPath.searchText("Лучшее"))).click();
 
 // TODO: 27.11.2022  Найти на странице postContainer с наивысшим post-rating
 //https://zennolab.com/discussion/threads/xpath-vzjat-naibolshee-chislo.86463/
 //span[@class='post_rating']//span[number(text()>10)]
 
-        WebElement postContainer = driver.findElement(By.xpath(XPath.search));
-        WebElement postRating = driver.findElement(By.xpath(XPath.search));
+//        WebElement postContainer = driver.findElement(By.xpath(XPath.search));
+//        WebElement postRating = driver.findElement(By.xpath(XPath.search));
 
 
 // TODO: 27.11.2022  Сохронить картинку в указанную деррикторию
 
 
         driver.findElement(By.xpath(XPath.searchText("Мобильная/темная версия"))).click();
+// TODO: 29.11.2022 Отключить SFW контент (через JS)
         WebElement search = driver.findElement(By.xpath(XPath.search));
-        search.sendKeys("котэ");
+        search.sendKeys(Options.tag);
         search.sendKeys(Keys.ENTER);
+        System.out.printf("Был выполнен поиск по тегу '%s'\n",Options.tag);
 
 // TODO: 27.11.2022  Дождаться появления на странице тега "котэ"
 // TODO: 27.11.2022  Случайному посту поставить "смайлик"
