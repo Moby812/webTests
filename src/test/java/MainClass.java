@@ -24,30 +24,31 @@ public class MainClass {
         System.out.printf("Cайт: %s загрузился \n", Options.site);
 
         List<WebElement> enterSite = driver.findElements(By.xpath(XPath.enterSite));
-        System.out.println(enterSite.size());
         if (enterSite.size() == 0) System.out.println("Вход на сайт уже был ранее выполнен");
         else {
-            System.out.printf("Выполняется вход на сайт под УЗ: %s", Options.login);
+            System.out.printf("Выполняется вход на сайт под УЗ: %s \n", Options.login);
             enterSite.get(0).click();
             driver.findElement(By.xpath(XPath.login)).sendKeys(Options.login);
             driver.findElement(By.xpath(XPath.pass)).sendKeys(Options.pass);
             driver.findElement(By.xpath(XPath.enterSite2)).click();
+            System.out.println("Вход выполнен успешно");
         }
 
         driver.findElement(By.xpath("//a[starts-with(text(),'Лучшее')]")).click();
 
-// TODO: 27.11.2022  Найти на странице postContainer с наивысшим post-rating
-//https://zennolab.com/discussion/threads/xpath-vzjat-naibolshee-chislo.86463/
-//span[@class='post_rating']//span[number(text()>10)]
+        List<WebElement> postRating = driver.findElements(By.xpath("//span[number(text()>25)]"));
 
-        WebElement postContainer = driver.findElement(By.xpath("//span[//span[number(text()>10)]"));
-//        String rate = driver.findElement(By.xpath("//span[number(text()>10)]")).getText();
-        String rate = postContainer.getText();
-        System.out.println(rate);
-//        WebElement postRating = driver.findElement(By.xpath(XPath.search));
+        // TODO: 02.12.2022  попробовать реализовать это через мапу
+        double rate = Options.sortRateList(postRating);
+        System.out.println("Максимальный рейтинг поста = " + rate);
 
+        String postContainer = driver.findElement(By.xpath("//span[number(text()>="+rate+")]/ancestor::div[@class='postContainer']")).getAttribute("id");
+        WebElement img = driver.findElement(By.xpath("//span[number(text()>="+rate+")]/ancestor::div[@class='postContainer']//div[@class='image']//img"));
+        System.out.println("Название контейнера поста: "+postContainer);
+        System.out.println("Линк на картинку поста: " +img.getAttribute("src"));
 
 // TODO: 27.11.2022  Сохронить картинку в указанную деррикторию
+
         System.out.printf("Файл '%s' был сохранён в деррикторию: %s \n", "pic.jpeg", Options.dir);
 
 

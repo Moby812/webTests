@@ -1,3 +1,9 @@
+import org.openqa.selenium.WebElement;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Options {
 
     static String site = "https://joyreactor.cc/";
@@ -11,4 +17,14 @@ public class Options {
 
     // TODO: 27.11.2022 дерректория куда сохранять файл
     static String dir = ".//pic/";
+
+    public static Double sortRateList(List<WebElement> b){
+        List<Double> rate = new ArrayList<>();
+        for (int i = 0; i < b.size()-1; i++) {
+            rate.add(Double.parseDouble(b.get(i).getText()));
+        }
+        Collections.sort(rate);
+        Collections.reverse(rate);
+        return rate.get(0);
+    }
 }
