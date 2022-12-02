@@ -24,8 +24,10 @@ public class MainClass {
     public static void main(String[] args) throws IOException {
         Options.Driver();
         WebDriver driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
-        driver.manage().window().minimize();
+        driver.manage().timeouts()
+                .implicitlyWait(30, TimeUnit.SECONDS)
+                .getPageLoadTimeout();
+//        driver.manage().window().minimize();
 
         driver.get(Options.site);
         WebDriverWait wait = (new WebDriverWait(driver, Duration.ofSeconds(15)));
@@ -87,14 +89,15 @@ public class MainClass {
         int randomPost = randomNum + 1;
         System.out.println("Случайный пост для лайка: " + randomPost);
         catsPosts.get(randomNum).click();
-// TODO: 29.11.2022 убедиться, что рейтинг увеличился
 
         //делается скрин страницы
         Date dateNow = new Date();
         SimpleDateFormat format = new SimpleDateFormat("hhmm");
         String scrName = "screenshot_"+ format.format(dateNow)+ ".png";
 
-//        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src,'.jpeg')]")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By
+                .xpath("(//button[@class='vote-button vote-plus'])["+ randomPost +"]" +
+                                    "/ancestor::div[@class='content']//img[contains(@src,'.jpeg')]")));
         File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(screenshot,new File(Options.dir+scrName));
         System.out.printf("Скриншот '%s' был сохранён в деррикторию: '%s'\n",scrName,Options.dir);
