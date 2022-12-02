@@ -1,19 +1,20 @@
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.BasicHttpContext;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -25,7 +26,6 @@ public class MainClass {
         WebDriver driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
         driver.manage().window().minimize();
-//        driver.manage().window().maximize();
 
         driver.get(Options.site);
         WebDriverWait wait = (new WebDriverWait(driver, Duration.ofSeconds(15)));
@@ -42,9 +42,10 @@ public class MainClass {
             driver.findElement(By.xpath(XPath.enterSite2)).click();
             System.out.println("Вход выполнен успешно");
         }
-// TODO: 02.12.2022 Проверить через jUnit, что вход на сайт выполнен успено
+// TODO: 02.12.2022 Проверить через jUnit, что вход на сайт выполнен успешно
 
-        driver.findElement(By.xpath("//a[starts-with(text(),'Лучшее')]")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(XPath.best)));
+        driver.findElement(By.xpath(XPath.best)).click();
 
         List<WebElement> postRating = driver.findElements(By.xpath("//span[number(text()>25)]"));
 
@@ -61,28 +62,42 @@ public class MainClass {
 //        https://stackoverflow.com/questions/6813704/how-to-download-an-image-using-selenium-any-version
 
         //реализация через org.apache.http client
-        File fileToSave = new File(Options.dir + postContainer + ".jpeg");
+        File fileToSave = new File(Options.dir + postContainer + "_"+ rate + ".jpeg");
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(img);
         HttpResponse response = httpClient.execute(httpGet, new BasicHttpContext());
         copyInputStreamToFile(response.getEntity().getContent(), fileToSave);
 
-        System.out.printf("Файл '%s' был сохранён в деррикторию: %s \n", postContainer+".jpeg", Options.dir);
+        System.out.printf("Файл '%s' был сохранён в деррикторию: %s \n", postContainer + "_"+ rate + ".jpeg", Options.dir);
 // TODO: 02.12.2022 Проверить через jUnit, что файл сохранился
 
         driver.findElement(By.xpath(XPath.searchText("Мобильная/темная версия"))).click();
+        System.out.println("Выполнен переход на Мобильную версию сайта");
 // TODO: 29.11.2022 Отключить SFW контент (через JS)
+
         WebElement search = driver.findElement(By.xpath(XPath.search));
         search.sendKeys(Options.tag);
         search.sendKeys(Keys.ENTER);
         System.out.printf("Был выполнен поиск по тегу '%s'\n", Options.tag);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(XPath.searchText(Options.tag))));
 
-// TODO: 27.11.2022  Дождаться появления на странице тега "котэ"
-// TODO: 27.11.2022  Случайному посту поставить "смайлик"
+        //случайному посту ставится лайк
+        List<WebElement> catsPosts = driver.findElements(By.xpath("//button[@class='vote-button vote-plus']"));
+        int randomNum = ThreadLocalRandom.current().nextInt(0, catsPosts.size()-1);
+        int randomPost = randomNum + 1;
+        System.out.println("Случайный пост для лайка: " + randomPost);
+        catsPosts.get(randomNum).click();
 // TODO: 29.11.2022 убедиться, что рейтинг увеличился
-// TODO: 01.12.2022 Сделать скрин страницы
 
-//        WebElement tag = driver.findElements(By.xpath("//a[text()='котэ']"));
+        //делается скрин страницы
+        Date dateNow = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("hhmm");
+        String scrName = "screenshot_"+ format.format(dateNow)+ ".png";
+
+//        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src,'.jpeg')]")));
+        File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(screenshot,new File(Options.dir+scrName));
+        System.out.printf("Скриншот '%s' был сохранён в деррикторию: '%s'\n",scrName,Options.dir);
 
         driver.quit();
     }

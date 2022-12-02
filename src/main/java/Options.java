@@ -10,7 +10,7 @@ public class Options {
     static String login = "NoGifs";
     static String pass = "NoGifs";
     static String user = "Moby8";
-    static String tag = "котэ";
+    static String tag = "geek";
 
     public static void Driver() {
         System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
