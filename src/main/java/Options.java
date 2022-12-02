@@ -9,14 +9,14 @@ public class Options {
     static String site = "https://joyreactor.cc/";
     static String login = "NoGifs";
     static String pass = "NoGifs";
+    static String user = "Moby8";
     static String tag = "котэ";
 
     public static void Driver() {
         System.setProperty("webdriver.chrome.driver", ".//drivers/chromedriver.exe");
     }
 
-    // TODO: 27.11.2022 дерректория куда сохранять файл
-    static String dir = ".//pic/";
+    static String dir = "C:/Users/"+user+"/Pictures/pic/";
 
     public static Double sortRateList(List<WebElement> b){
         List<Double> rate = new ArrayList<>();
